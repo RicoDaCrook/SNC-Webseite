@@ -10,7 +10,15 @@ export default function Footer() {
           {/* Company Info */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <Image src="/images/snclogo.png" alt="SNC Logo" width={40} height={40} className="rounded-lg" />
+              <Image
+                src="/images/snclogo.png"
+                alt="SNC Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+                loading="lazy"
+                sizes="40px"
+              />
               <div>
                 <div className="font-bold">SNC Gutachter</div>
                 <div className="text-xs text-gray-400">Öffentlich bestellt & vereidigt</div>
@@ -25,24 +33,24 @@ export default function Footer() {
           {/* Quick Links */}
           <div>
             <h3 className="font-bold mb-4">Schnellzugriff</h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/#prozess" className="text-gray-400 hover:text-snc-yellow transition-colors">
+                <Link href="/#prozess" className="text-gray-400 hover:text-snc-yellow transition-colors inline-block py-1 touch-target">
                   Unser Prozess
                 </Link>
               </li>
               <li>
-                <Link href="/rechner" className="text-gray-400 hover:text-snc-yellow transition-colors">
+                <Link href="/rechner" className="text-gray-400 hover:text-snc-yellow transition-colors inline-block py-1 touch-target">
                   Wertminderungs-Rechner
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-gray-400 hover:text-snc-yellow transition-colors">
+                <Link href="/faq" className="text-gray-400 hover:text-snc-yellow transition-colors inline-block py-1 touch-target">
                   Häufige Fragen (FAQ)
                 </Link>
               </li>
               <li>
-                <a href="/#kontakt" className="text-gray-400 hover:text-snc-yellow transition-colors">
+                <a href="/#kontakt" className="text-gray-400 hover:text-snc-yellow transition-colors inline-block py-1 touch-target">
                   Kontakt
                 </a>
               </li>
@@ -62,13 +70,21 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-snc-yellow flex-shrink-0" />
-                <a href="tel:+4915209423739" className="text-gray-400 hover:text-snc-yellow transition-colors">
+                <a
+                  href="tel:+4915209423739"
+                  className="text-gray-400 hover:text-snc-yellow transition-colors py-1 touch-target"
+                  aria-label="Anrufen +49 1520 9423739"
+                >
                   +49 1520 9423739
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-snc-yellow flex-shrink-0" />
-                <a href="mailto:kontakt@snc-svb.de" className="text-gray-400 hover:text-snc-yellow transition-colors">
+                <a
+                  href="mailto:kontakt@snc-svb.de"
+                  className="text-gray-400 hover:text-snc-yellow transition-colors py-1 touch-target break-all"
+                  aria-label="E-Mail senden an kontakt@snc-svb.de"
+                >
                   kontakt@snc-svb.de
                 </a>
               </li>
@@ -89,7 +105,14 @@ export default function Footer() {
             
             <div className="mt-6">
               <div className="text-xs text-gray-500 mb-2">Kooperationspartner:</div>
-              <div className="text-sm text-gray-400">Güzel Anwaltskanzlei</div>
+              <a
+                href="https://kanzlei-guezel.de/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gray-400 hover:text-snc-yellow transition-colors inline-block py-1"
+              >
+                Güzel Anwaltskanzlei
+              </a>
             </div>
           </div>
         </div>
@@ -100,14 +123,14 @@ export default function Footer() {
             <div>
               © 2025 SNC Gutachter · Ilker Sancar · Alle Rechte vorbehalten
             </div>
-            <div className="flex gap-6">
-              <Link href="/impressum" className="hover:text-snc-yellow transition-colors">
+            <div className="flex flex-wrap gap-4 sm:gap-6 justify-center md:justify-end">
+              <Link href="/impressum" className="hover:text-snc-yellow transition-colors py-1 touch-target">
                 Impressum
               </Link>
-              <Link href="/datenschutz" className="hover:text-snc-yellow transition-colors">
+              <Link href="/datenschutz" className="hover:text-snc-yellow transition-colors py-1 touch-target">
                 Datenschutz
               </Link>
-              <Link href="/faq" className="hover:text-snc-yellow transition-colors">
+              <Link href="/faq" className="hover:text-snc-yellow transition-colors py-1 touch-target">
                 FAQ
               </Link>
             </div>

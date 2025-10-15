@@ -5,6 +5,22 @@
 @layer base {
   body {
     @apply bg-white text-snc-dark;
+    /* Ensure readable font size on mobile */
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent text size adjust on iOS */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Ensure all interactive elements have min touch target size */
+  button,
+  a,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"] {
+    min-height: 44px; /* iOS recommendation */
+    min-width: 44px;
   }
 }
 
@@ -12,11 +28,69 @@
   .animate-pulse-slow {
     animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
+
+  /* Shadow Glow Utilities */
+  .shadow-glow {
+    box-shadow: 0 0 20px rgba(255, 208, 0, 0.4);
+  }
+
+  .shadow-glow-lg {
+    box-shadow: 0 0 30px rgba(255, 208, 0, 0.6);
+  }
+
+  /* Touch Target Utility - Ensures minimum 48x48px touch targets for mobile */
+  .touch-target {
+    min-height: 48px;
+    /* Ensure content is centered if element is smaller */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Desktop: Reduce to standard size */
+  @media (min-width: 768px) {
+    .touch-target {
+      min-height: 44px;
+    }
+  }
 }
 
 /* Smooth Scroll */
 html {
   scroll-behavior: smooth;
+  /* Fix iOS Safari bottom padding issue */
+  height: 100%;
+}
+
+/* Navigation Alignment Fix - Ensures all nav items are perfectly aligned */
+nav a,
+nav button:not(.touch-target) {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Ensure no horizontal overflow on mobile */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Larger tap targets on mobile */
+  button,
+  a {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Improve form inputs on mobile */
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    min-height: 48px;
+  }
 }
 
 /* Custom Scrollbar */
@@ -34,34 +108,85 @@ html {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ffff47;
+  background: #FFD000;
 }
 
-@layer utilities {
-  .animate-pulse-slow {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+/* Ripple Effect */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.6);
+  transform: scale(0);
+  animation: ripple-animation 600ms ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
   }
 }
 
-/* Smooth Scroll */
-html {
-  scroll-behavior: smooth;
+/* Input Focus Effects */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #FFD000;
+  box-shadow: 0 0 0 3px rgba(255, 208, 0, 0.1);
+  transition: all 0.2s ease;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
+/* Mobile: Reduce focus ring intensity */
+@media (max-width: 768px) {
+  input:focus,
+  textarea:focus,
+  select:focus {
+    box-shadow: 0 0 0 2px rgba(255, 208, 0, 0.2);
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+/* Floating Label Animation */
+.input-group {
+  position: relative;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #9CA3AF;
-  border-radius: 5px;
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label {
+  transform: translateY(-1.5rem) scale(0.85);
+  background-color: white;
+  padding: 0 0.5rem;
+  color: #FFD000;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #ffff47;
+.input-group label {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.2s ease;
+  pointer-events: none;
+  color: #6B7280;
+}
+
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 50%,
+    #f0f0f0 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }

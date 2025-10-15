@@ -1,7 +1,7 @@
 'use client'
 
-import { motion, useScroll, useTransform, useInView } from 'framer-motion'
-import { Shield, Zap, Award, Phone, MessageCircle, ArrowRight, CheckCircle, Star, Clock, Calculator, Car, FileText, Users, TrendingUp, Target } from 'lucide-react'
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion'
+import { Shield, Zap, Award, Phone, MessageCircle, ArrowRight, CheckCircle, Star, Clock, Calculator, Car, FileText, Users, TrendingUp, Target, Menu, X } from 'lucide-react'
 import Image from 'next/image'
 import { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -33,10 +33,96 @@ function CountUp({ end, duration = 2, suffix = '' }: { end: number; duration?: n
   return <span ref={ref}>{count.toLocaleString('de-DE')}{suffix}</span>
 }
 
+// Typing Animation Component
+function TypingText({ text, delay = 0 }: { text: string; delay?: number }) {
+  const [displayedText, setDisplayedText] = useState('')
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText(prev => prev + text[currentIndex])
+        setCurrentIndex(prev => prev + 1)
+      }, 40 + delay)
+      return () => clearTimeout(timeout)
+    }
+  }, [currentIndex, text, delay, mounted])
+
+  // Show nothing during SSR to avoid hydration mismatch
+  if (!mounted) return <span>&nbsp;</span>
+
+  return <span>{displayedText}</span>
+}
+
+// Time-based Urgency Text Component
+function UrgencyText() {
+  const [text, setText] = useState("")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+
+    const updateText = () => {
+      const now = new Date()
+      const hour = now.getHours()
+
+      if (hour >= 19) {
+        // 19:00 - 23:59 Uhr
+        setText("Morgen garantierten Termin sichern")
+      } else {
+        // 00:00 - 18:59 Uhr
+        setText("Schnelle Terminvergabe – Noch heute möglich")
+      }
+    }
+
+    updateText()
+    // Update every minute to check time
+    const interval = setInterval(updateText, 60000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Show nothing during SSR to avoid hydration mismatch
+  if (!mounted) return <span>&nbsp;</span>
+
+  return <span>{text}</span>
+}
+
 export default function HomePage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true)
+  const [showWhatsAppBubble, setShowWhatsAppBubble] = useState(false)
   const { scrollYProgress } = useScroll()
   const heroY = useTransform(scrollYProgress, [0, 0.5], [0, 150])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0])
+  const portraitY = useTransform(scrollYProgress, [0, 0.5], [0, -80])
+  const portraitScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95])
+
+  // Hide scroll indicator when user scrolls
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setShowScrollIndicator(false)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Show WhatsApp bubble after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowWhatsAppBubble(true)
+    }, 3000)
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
@@ -44,31 +130,118 @@ export default function HomePage() {
       <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <motion.div 
+            <motion.div
               className="flex items-center gap-3"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <Image src="/images/snclogo.png" alt="SNC Logo" width={40} height={40} className="rounded-lg" />
+              <Image
+                src="/images/snclogo.png"
+                alt="SNC Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+                priority
+                sizes="40px"
+              />
               <div>
                 <div className="font-bold text-snc-dark">SNC Gutachter</div>
                 <div className="text-xs text-snc-gray">Öffentlich bestellt & vereidigt</div>
               </div>
             </motion.div>
-            
+
+            {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-6">
-              <a href="#prozess" className="text-snc-gray hover:text-snc-dark transition-colors">Prozess</a>
-              <Link href="/rechner" className="text-snc-gray hover:text-snc-dark transition-colors">Rechner</Link>
-              <Link href="/faq" className="text-snc-gray hover:text-snc-dark transition-colors">FAQ</Link>
+              <a href="#prozess" className="text-snc-gray hover:text-snc-dark transition-colors py-2">Prozess</a>
+              <Link href="/rechner" className="text-snc-gray hover:text-snc-dark transition-colors py-2">Rechner</Link>
+              <Link href="/ueber-snc" className="text-snc-gray hover:text-snc-dark transition-colors py-2">Über SNC</Link>
+              <Link href="/faq" className="text-snc-gray hover:text-snc-dark transition-colors py-2">FAQ</Link>
               <a href="#kontakt" className="bg-snc-yellow text-snc-dark px-6 py-2 rounded-lg font-semibold hover:shadow-glow transition-all">
                 Kontakt
               </a>
             </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-3 text-snc-dark hover:bg-snc-light-gray rounded-lg transition-colors touch-target"
+              aria-label={mobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden bg-white border-t border-gray-100"
+            >
+              <div className="px-4 py-6 space-y-4">
+                <a
+                  href="#prozess"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-3 px-4 text-snc-gray hover:text-snc-dark hover:bg-snc-light-gray rounded-lg transition-colors"
+                >
+                  Prozess
+                </a>
+                <Link
+                  href="/rechner"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-3 px-4 text-snc-gray hover:text-snc-dark hover:bg-snc-light-gray rounded-lg transition-colors"
+                >
+                  Rechner
+                </Link>
+                <Link
+                  href="/ueber-snc"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-3 px-4 text-snc-gray hover:text-snc-dark hover:bg-snc-light-gray rounded-lg transition-colors"
+                >
+                  Über SNC
+                </Link>
+                <Link
+                  href="/faq"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-3 px-4 text-snc-gray hover:text-snc-dark hover:bg-snc-light-gray rounded-lg transition-colors"
+                >
+                  FAQ
+                </Link>
+                <a
+                  href="#kontakt"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-3 px-4 bg-snc-yellow text-snc-dark rounded-lg font-semibold text-center hover:shadow-glow transition-all"
+                >
+                  Kontakt
+                </a>
+                <div className="flex flex-col gap-3 pt-4 border-t border-gray-100">
+                  <a
+                    href="tel:+4915209423739"
+                    className="flex items-center justify-center gap-2 py-3 px-4 bg-snc-dark text-white rounded-lg font-semibold"
+                  >
+                    <Phone className="w-5 h-5" />
+                    Anrufen
+                  </a>
+                  <a
+                    href="https://wa.me/4915209423739"
+                    className="flex items-center justify-center gap-2 py-3 px-4 bg-green-500 text-white rounded-lg font-semibold"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    WhatsApp
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
-      {/* Hero Section - UPGRADED */}
+      {/* Hero Section - MAXIMUM WOW EFFECT! */}
       <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
         {/* Animated Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-snc-dark via-snc-dark-2 to-snc-dark">
@@ -86,71 +259,182 @@ export default function HomePage() {
               style={{ y: heroY, opacity: heroOpacity }}
               className="text-white"
             >
-              {/* Floating Badge */}
+              {/* Floating Badge with Pulse Effect */}
               <motion.div
-                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 rounded-full text-sm mb-6"
+                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 rounded-full text-sm mb-6 cursor-pointer"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+                animate={{
+                  opacity: 1,
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  opacity: { delay: 0.2 },
+                  y: {
+                    repeat: Infinity,
+                    duration: 3,
+                    ease: "easeInOut"
+                  }
+                }}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 0 20px rgba(255, 208, 0, 0.5)"
+                }}
               >
-                <Shield className="w-4 h-4 text-snc-yellow" />
+                <motion.div
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 5, -5, 0]
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 2,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <Shield className="w-4 h-4 text-snc-yellow" />
+                </motion.div>
                 <span>Öffentlich bestellt & vereidigt</span>
               </motion.div>
 
-              <motion.h1 
+              {/* Typing Animation Headline */}
+              <motion.h1
                 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                Unabhängige<br />
-                <span className="text-snc-yellow">KFZ-Gutachten</span><br />
-                in Stuttgart
+                <span className="block">
+                  <TypingText text="Unabhängige" />
+                </span>
+                <span className="block text-snc-yellow">
+                  <TypingText text="KFZ-Gutachten" delay={100} />
+                </span>
+                <motion.span
+                  className="block"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.95 }}
+                >
+                  in Stuttgart
+                </motion.span>
               </motion.h1>
 
-              <motion.p 
+              <motion.p
                 className="text-xl text-gray-300 mb-8 leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 1.15 }}
               >
-                Nach einem Unfall bis zu <strong className="text-snc-yellow">€2.500 mehr</strong> Entschädigung durch ein unabhängiges Gutachten. 
+                Nach einem Unfall bis zu <strong className="text-snc-yellow">€2.500 mehr</strong> Entschädigung durch ein unabhängiges Gutachten.
                 <strong> Für Sie kostenlos</strong> - die Versicherung zahlt.
               </motion.p>
 
-              <motion.div 
-                className="flex flex-col sm:flex-row gap-4"
+              {/* Enhanced CTA Buttons */}
+              <motion.div
+                className="flex flex-col sm:flex-row gap-4 mb-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 1.3 }}
               >
-                <motion.a
-                  href="tel:+4915209423739"
-                  className="bg-snc-yellow text-snc-dark px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-glow-lg transition-all flex items-center justify-center gap-2 group"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Phone className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                  Jetzt anrufen
-                </motion.a>
-                
-                <motion.a
-                  href="https://wa.me/4915209423739"
-                  className="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-2"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  WhatsApp
-                </motion.a>
+                {/* Heartbeat Animation Button */}
+                <motion.div className="relative w-full sm:w-auto">
+                  <motion.a
+                    href="tel:+4915209423739"
+                    className="relative z-10 bg-snc-yellow text-snc-dark px-8 py-5 rounded-xl font-semibold text-lg hover:shadow-glow-lg transition-all flex items-center justify-center gap-2 group w-full sm:w-auto touch-target"
+                    aria-label="Jetzt anrufen +49 152 09423739"
+                    animate={{
+                      scale: [1, 1.05, 1]
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 1.5,
+                      ease: "easeInOut"
+                    }}
+                    whileHover={{
+                      scale: 1.1,
+                      rotateX: 5,
+                      rotateY: 5
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    style={{ transformStyle: 'preserve-3d' }}
+                  >
+                    <Phone className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                    Jetzt anrufen
+                  </motion.a>
+                </motion.div>
+
+                {/* Ring Animation Button */}
+                <motion.div className="relative w-full sm:w-auto">
+                  {/* Animated Ring */}
+                  <motion.div
+                    className="absolute inset-0 border-2 border-green-400 rounded-xl"
+                    animate={{
+                      scale: [1, 1.1, 1],
+                      opacity: [0.5, 0, 0.5]
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 2,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  <motion.a
+                    href="https://wa.me/4915209423739"
+                    className="relative z-10 bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-5 rounded-xl font-semibold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-2 group w-full sm:w-auto touch-target"
+                    aria-label="WhatsApp Kontakt"
+                    whileHover={{
+                      scale: 1.1,
+                      rotateX: 5,
+                      rotateY: -5,
+                      backgroundColor: "rgba(255, 255, 255, 0.2)"
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    style={{ transformStyle: 'preserve-3d' }}
+                  >
+                    <motion.div
+                      animate={{ rotate: [0, 360] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 3,
+                        ease: "linear"
+                      }}
+                      className="group-hover:pause"
+                    >
+                      <MessageCircle className="w-5 h-5" />
+                    </motion.div>
+                    WhatsApp
+                  </motion.a>
+                </motion.div>
+              </motion.div>
+
+              {/* URGENCY ELEMENT */}
+              <motion.div
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-lg mb-6"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.5 }}
+              >
+                <motion.span
+                  className="w-2 h-2 bg-white rounded-full"
+                  animate={{
+                    opacity: [1, 0.3, 1],
+                    scale: [1, 1.5, 1]
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1.5
+                  }}
+                />
+                <Clock className="w-4 h-4" />
+                <UrgencyText />
               </motion.div>
 
               {/* Trust Indicators */}
-              <motion.div 
-                className="flex items-center gap-6 mt-12 pt-8 border-t border-white/20"
+              <motion.div
+                className="flex items-center gap-6 pt-8 border-t border-white/20"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
+                transition={{ delay: 1.7 }}
               >
                 <div className="flex items-center gap-2">
                   <Star className="w-5 h-5 text-snc-yellow fill-snc-yellow" />
@@ -163,39 +447,78 @@ export default function HomePage() {
               </motion.div>
             </motion.div>
 
-            {/* Right: Portrait with Parallax */}
+            {/* Right: Portrait with Enhanced Parallax & Glow */}
             <motion.div
               className="relative"
-              style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, -50]) }}
+              style={{ y: portraitY, scale: portraitScale }}
             >
               <motion.div
-                className="relative z-10"
+                className="relative z-10 group"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4 }}
+                whileHover={{ scale: 1.02 }}
               >
+                {/* Glow Effect on Hover */}
+                <motion.div
+                  className="absolute inset-0 rounded-2xl bg-snc-yellow/30 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  animate={{
+                    scale: [1, 1.05, 1]
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 3,
+                    ease: "easeInOut"
+                  }}
+                />
+
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                  <Image 
-                    src="/images/sncportrait.png" 
-                    alt="Ilker Sancar - KFZ Gutachter" 
-                    width={600} 
+                  <Image
+                    src="/images/sncportrait.png"
+                    alt="Ilker Sancar - KFZ Gutachter"
+                    width={600}
                     height={800}
                     className="w-full h-auto"
+                    priority
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                    quality={90}
                   />
                   <div className="absolute inset-0 ring-2 ring-white/20 rounded-2xl"></div>
                 </div>
-                
-                {/* Floating Card */}
+
+                {/* Floating Card with Animation */}
                 <motion.div
                   className="absolute -bottom-6 -left-6 bg-white rounded-xl p-4 shadow-2xl"
                   initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.8 }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                    y: [0, -5, 0]
+                  }}
+                  transition={{
+                    opacity: { delay: 0.8 },
+                    x: { delay: 0.8 },
+                    y: {
+                      repeat: Infinity,
+                      duration: 2,
+                      ease: "easeInOut",
+                      delay: 1
+                    }
+                  }}
+                  whileHover={{ scale: 1.05 }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-snc-yellow rounded-lg flex items-center justify-center">
+                    <motion.div
+                      className="w-12 h-12 bg-snc-yellow rounded-lg flex items-center justify-center"
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 4,
+                        ease: "easeInOut"
+                      }}
+                    >
                       <Award className="w-6 h-6 text-snc-dark" />
-                    </div>
+                    </motion.div>
                     <div>
                       <div className="font-bold text-snc-dark">Ilker Sancar</div>
                       <div className="text-sm text-snc-gray">Ihr Experte</div>
@@ -204,26 +527,84 @@ export default function HomePage() {
                 </motion.div>
               </motion.div>
 
-              {/* Background Decoration */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-snc-yellow/20 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-300/20 rounded-full blur-3xl"></div>
+              {/* Enhanced Background Decoration */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none">
+                <motion.div
+                  className="absolute top-0 right-0 w-64 h-64 bg-snc-yellow/20 rounded-full blur-3xl"
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.2, 0.3, 0.2]
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 4,
+                    ease: "easeInOut"
+                  }}
+                />
+                <motion.div
+                  className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-300/20 rounded-full blur-3xl"
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    opacity: [0.2, 0.3, 0.2]
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 5,
+                    ease: "easeInOut",
+                    delay: 1
+                  }}
+                />
               </div>
             </motion.div>
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, repeat: Infinity, duration: 1.5 }}
-        >
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
-            <div className="w-1 h-3 bg-white/50 rounded-full"></div>
-          </div>
-        </motion.div>
+        {/* Enhanced Scroll Indicator */}
+        <AnimatePresence>
+          {showScrollIndicator && (
+            <motion.div
+              className="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ delay: 3 }}
+              onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+            >
+              <motion.div
+                className="w-8 h-12 border-2 border-white/40 rounded-full flex justify-center pt-2 hover:border-snc-yellow transition-colors"
+                animate={{ y: [0, 10, 0] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1.5,
+                  ease: "easeInOut"
+                }}
+              >
+                <motion.div
+                  className="w-1.5 h-3 bg-snc-yellow rounded-full"
+                  animate={{
+                    y: [0, 8, 0],
+                    opacity: [1, 0.3, 1]
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1.5,
+                    ease: "easeInOut"
+                  }}
+                />
+              </motion.div>
+              <motion.p
+                className="text-white/60 text-xs mt-2 text-center"
+                animate={{ opacity: [0.6, 1, 0.6] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 2
+                }}
+              >
+                Scroll
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </section>
 
       {/* Stats Counter Section - NEU! */}
@@ -290,12 +671,15 @@ export default function HomePage() {
               transition={{ duration: 0.6 }}
             >
               <div className="relative">
-                <Image 
-                  src="/images/sncgutachter.png" 
-                  alt="Ilker Sancar bei der Arbeit" 
-                  width={600} 
+                <Image
+                  src="/images/sncgutachter.png"
+                  alt="Ilker Sancar bei der Arbeit"
+                  width={600}
                   height={400}
                   className="rounded-2xl shadow-2xl w-full h-auto"
+                  loading="lazy"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                  quality={85}
                 />
                 <div className="absolute inset-0 ring-2 ring-snc-yellow/20 rounded-2xl"></div>
               </div>
@@ -565,9 +949,9 @@ export default function HomePage() {
             <h2 className="text-4xl lg:text-5xl font-bold text-snc-dark mb-4">
               Das sagen unsere Kunden
             </h2>
-            <div className="flex items-center justify-center gap-2 text-snc-yellow mb-4">
+            <div className="flex items-center justify-center gap-2 text-snc-gold mb-4">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-6 h-6 fill-current" />
+                <Star key={i} className="w-6 h-6 fill-current drop-shadow-sm" />
               ))}
             </div>
             <p className="text-xl text-snc-gray">4.9/5 Sterne - Über 200 Bewertungen</p>
@@ -602,7 +986,7 @@ export default function HomePage() {
               >
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-snc-yellow fill-current" />
+                    <Star key={i} className="w-5 h-5 text-snc-gold fill-current drop-shadow-sm" />
                   ))}
                 </div>
                 <p className="text-snc-gray mb-6 leading-relaxed">"{testimonial.text}"</p>
@@ -629,22 +1013,25 @@ export default function HomePage() {
               schreiben Sie uns auf WhatsApp - die Erstberatung ist <strong>kostenlos</strong>.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12">
               <motion.a
                 href="tel:+4915209423739"
-                className="bg-snc-yellow text-snc-dark px-10 py-5 rounded-xl font-bold text-xl hover:shadow-glow-lg transition-all flex items-center justify-center gap-3"
+                className="bg-snc-yellow text-snc-dark px-8 sm:px-10 py-5 rounded-xl font-bold text-lg sm:text-xl hover:shadow-glow-lg transition-all flex items-center justify-center gap-3 w-full sm:w-auto touch-target"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                aria-label="Jetzt anrufen +49 152 09423739"
               >
                 <Phone className="w-6 h-6" />
-                +49 1520 9423739
+                <span className="hidden sm:inline">+49 1520 9423739</span>
+                <span className="sm:hidden">Anrufen</span>
               </motion.a>
 
               <motion.a
                 href="https://wa.me/4915209423739"
-                className="bg-green-500 text-white px-10 py-5 rounded-xl font-bold text-xl hover:bg-green-600 transition-all flex items-center justify-center gap-3"
+                className="bg-green-500 text-white px-8 sm:px-10 py-5 rounded-xl font-bold text-lg sm:text-xl hover:bg-green-600 transition-all flex items-center justify-center gap-3 w-full sm:w-auto touch-target"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                aria-label="WhatsApp Kontakt"
               >
                 <MessageCircle className="w-6 h-6" />
                 WhatsApp
@@ -669,18 +1056,70 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* WhatsApp Float Button */}
-      <motion.a
-        href="https://wa.me/4915209423739"
-        className="fixed bottom-8 right-8 w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center shadow-2xl hover:bg-green-600 transition-all z-50"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        <MessageCircle className="w-8 h-8" />
-      </motion.a>
+      {/* WhatsApp Float Button with Chat Preview */}
+      <div className="fixed bottom-8 right-8 z-50">
+        {/* Chat Preview Bubble */}
+        <AnimatePresence>
+          {showWhatsAppBubble && (
+            <motion.div
+              initial={{ opacity: 0, x: 100, y: 20 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="absolute bottom-20 right-0 bg-white rounded-2xl shadow-2xl p-4 w-72 mb-2"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowWhatsAppBubble(false)}
+                className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {/* Content */}
+              <div className="flex items-start gap-3">
+                {/* Profile Picture Placeholder */}
+                <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-white font-bold text-lg">IS</span>
+                </div>
+
+                {/* Message */}
+                <div className="flex-1">
+                  <div className="font-bold text-snc-dark mb-1">Ilker Sancar</div>
+                  <div className="bg-green-50 rounded-lg p-3 mb-3">
+                    <p className="text-sm text-gray-700 mb-1">Hallo! 👋</p>
+                    <p className="text-sm text-gray-700">Wie kann ich helfen?</p>
+                  </div>
+
+                  {/* WhatsApp Button */}
+                  <motion.a
+                    href="https://wa.me/4915209423739"
+                    className="flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-green-600 transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp öffnen
+                  </motion.a>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* WhatsApp Button */}
+        <motion.a
+          href="https://wa.me/4915209423739"
+          className="block w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center shadow-2xl hover:bg-green-600 transition-all"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <MessageCircle className="w-8 h-8" />
+        </motion.a>
+      </div>
     </div>
   )
 }

@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         'snc-yellow': '#ffff47',
+        'snc-gold': '#F59E0B',
         'snc-dark': '#0e1a1a',
         'snc-dark-2': '#1F2937',
         'snc-gray': '#9CA3AF',

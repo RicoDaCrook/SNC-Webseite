@@ -2,10 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, ArrowLeft, Car, Calendar, Gauge, Euro, AlertCircle, CheckCircle, Phone, MessageCircle, Sparkles } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Car, Calendar, Gauge, Euro, AlertCircle, CheckCircle, Phone, MessageCircle, Sparkles, TrendingUp, TrendingDown, Users } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import Confetti from 'react-confetti'
+import dynamic from 'next/dynamic'
+
+// Dynamic import for Confetti (only loaded when needed)
+const Confetti = dynamic(() => import('react-confetti'), {
+  ssr: false
+})
 
 const CAR_BRANDS = [
   'Audi', 'BMW', 'Mercedes-Benz', 'Volkswagen', 'Porsche',
@@ -19,36 +24,74 @@ function CountUp({ end }: { end: number }) {
   useEffect(() => {
     let startTime: number | null = null
     const duration = 2000
-    
+
     const animate = (currentTime: number) => {
       if (!startTime) startTime = currentTime
       const progress = Math.min((currentTime - startTime) / duration, 1)
-      
+
       setCount(Math.floor(progress * end))
-      
+
       if (progress < 1) {
         requestAnimationFrame(animate)
       }
     }
-    
+
     requestAnimationFrame(animate)
   }, [end])
 
   return <>{count.toLocaleString('de-DE')}€</>
 }
 
+// Social Proof Counter
+function SocialProofCounter() {
+  const [count, setCount] = useState(2543)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Random increment between 1-3 every 5-10 seconds
+      if (Math.random() > 0.5) {
+        setCount(prev => prev + Math.floor(Math.random() * 3) + 1)
+      }
+    }, Math.random() * 5000 + 5000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <motion.div
+      className="flex items-center justify-center gap-2 text-snc-gray mb-8"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      <Users className="w-5 h-5 text-snc-yellow" />
+      <span className="text-sm">
+        <motion.span
+          key={count}
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="font-bold text-snc-dark"
+        >
+          {count.toLocaleString('de-DE')}
+        </motion.span>
+        {' '}Personen haben bereits verglichen
+      </span>
+    </motion.div>
+  )
+}
+
 export default function RechnerPage() {
+  const [activeTab, setActiveTab] = useState<'wertminderung' | 'vergleich'>('wertminderung')
   const [step, setStep] = useState(1)
   const [showResult, setShowResult] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
-  
+
   // Form Data
   const [brand, setBrand] = useState('')
   const [year, setYear] = useState(2020)
   const [km, setKm] = useState(50000)
   const [repairCost, setRepairCost] = useState(5000)
   const [damage, setDamage] = useState<'klein' | 'mittel' | 'groß'>('mittel')
-  
+
   // Results
   const [result, setResult] = useState({ min: 0, max: 0 })
 
@@ -57,33 +100,62 @@ export default function RechnerPage() {
     const currentYear = new Date().getFullYear()
     const age = currentYear - year
     const ageFactor = Math.max(0.05, Math.min(0.15, 0.15 - (age * 0.015)))
-    
+
     // KM Factor (je weniger km, desto höher)
     const kmFactor = km < 50000 ? 1.2 : km < 100000 ? 1.0 : 0.8
-    
+
     // Damage Factor
     const damageFactor = {
       klein: 0.8,
       mittel: 1.0,
       groß: 1.2
     }[damage]
-    
+
     // Base Calculation
     const baseDepreciation = repairCost * ageFactor * kmFactor * damageFactor
-    
+
     // Range
     const min = Math.round(baseDepreciation * 0.8 / 50) * 50
     const max = Math.round(baseDepreciation * 1.2 / 50) * 50
-    
+
     return { min, max }
+  }
+
+  // Calculate comparison values
+  const calculateComparison = () => {
+    const sncDepreciation = calculateDepreciation()
+    const insuranceDepreciation = Math.round(sncDepreciation.max * 0.6) // 60% vom SNC-Wert
+
+    const sncNutzungsausfall = Math.round(repairCost * 0.09) // ~9% der Reparaturkosten
+
+    return {
+      insurance: {
+        repair: repairCost,
+        depreciation: insuranceDepreciation,
+        nutzungsausfall: 0,
+        total: repairCost + insuranceDepreciation
+      },
+      snc: {
+        repair: repairCost,
+        depreciation: sncDepreciation.max,
+        nutzungsausfall: sncNutzungsausfall,
+        total: repairCost + sncDepreciation.max + sncNutzungsausfall
+      }
+    }
   }
 
   const handleCalculate = () => {
     const calculated = calculateDepreciation()
     setResult(calculated)
     setShowResult(true)
-    setShowConfetti(true)
-    setTimeout(() => setShowConfetti(false), 5000)
+
+    if (activeTab === 'vergleich') {
+      setShowConfetti(true)
+      setTimeout(() => setShowConfetti(false), 5000)
+    } else {
+      setShowConfetti(true)
+      setTimeout(() => setShowConfetti(false), 5000)
+    }
   }
 
   const resetCalculator = () => {
@@ -96,26 +168,87 @@ export default function RechnerPage() {
     setDamage('mittel')
   }
 
+  const comparison = calculateComparison()
+  const loss = comparison.snc.total - comparison.insurance.total
+  const percentIncrease = Math.round(((comparison.snc.depreciation - comparison.insurance.depreciation) / comparison.insurance.depreciation) * 100)
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-snc-light-gray to-white">
-      {showConfetti && <Confetti recycle={false} numberOfPieces={200} />}
-      
+      {showConfetti && activeTab === 'vergleich' && <Confetti recycle={false} numberOfPieces={300} />}
+      {showConfetti && activeTab === 'wertminderung' && <Confetti recycle={false} numberOfPieces={200} />}
+
       {/* Header */}
       <header className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <Image src="/images/snclogo.png" alt="SNC Logo" width={40} height={40} className="rounded-lg" />
+              <Image
+                src="/images/snclogo.png"
+                alt="SNC Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+                priority
+                sizes="40px"
+              />
               <span className="font-bold text-snc-dark">SNC Gutachter</span>
             </Link>
-            <a href="tel:+4915209423739" className="text-snc-yellow hover:text-snc-dark transition-colors">
-              <Phone className="w-6 h-6" />
-            </a>
+            <div className="flex items-center gap-4">
+              <Link href="/" className="text-snc-gray hover:text-snc-dark transition-colors hidden md:block py-2">
+                Home
+              </Link>
+              <Link href="/ueber-snc" className="text-snc-gray hover:text-snc-dark transition-colors hidden md:block py-2">
+                Über SNC
+              </Link>
+              <Link href="/faq" className="text-snc-gray hover:text-snc-dark transition-colors hidden md:block py-2">
+                FAQ
+              </Link>
+              <a
+                href="tel:+4915209423739"
+                className="text-snc-yellow hover:text-snc-dark transition-colors p-2 touch-target"
+                aria-label="Jetzt anrufen"
+              >
+                <Phone className="w-6 h-6" />
+              </a>
+            </div>
           </div>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Social Proof Counter */}
+        <SocialProofCounter />
+
+        {/* Tab System */}
+        <div className="flex gap-2 mb-8 bg-white rounded-2xl p-2 shadow-lg">
+          <button
+            onClick={() => {
+              setActiveTab('wertminderung')
+              resetCalculator()
+            }}
+            className={`flex-1 px-6 py-3 rounded-xl font-semibold transition-all ${
+              activeTab === 'wertminderung'
+                ? 'bg-snc-yellow text-snc-dark shadow-md'
+                : 'text-snc-gray hover:bg-snc-light-gray'
+            }`}
+          >
+            💰 Wertminderung
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('vergleich')
+              resetCalculator()
+            }}
+            className={`flex-1 px-6 py-3 rounded-xl font-semibold transition-all ${
+              activeTab === 'vergleich'
+                ? 'bg-snc-yellow text-snc-dark shadow-md'
+                : 'text-snc-gray hover:bg-snc-light-gray'
+            }`}
+          >
+            ⚖️ Vergleich
+          </button>
+        </div>
+
         {!showResult ? (
           <>
             {/* Progress Bar */}
@@ -140,15 +273,18 @@ export default function RechnerPage() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-12"
             >
-              <div className="inline-flex items-center gap-2 bg-snc-yellow/10 text-snc-yellow px-4 py-2 rounded-full text-sm font-semibold mb-4">
+              <div className="inline-flex items-center gap-2 bg-snc-yellow/10 text-snc-dark px-4 py-2 rounded-full text-sm font-semibold mb-4">
                 <Sparkles className="w-4 h-4" />
                 Kostenloser Rechner
               </div>
               <h1 className="text-4xl lg:text-5xl font-bold text-snc-dark mb-4">
-                Wertminderungs-Rechner
+                {activeTab === 'wertminderung' ? 'Wertminderungs-Rechner' : 'Vergleichs-Rechner'}
               </h1>
               <p className="text-xl text-snc-gray">
-                Prüfen Sie in 60 Sekunden, wie viel Ihnen zusteht
+                {activeTab === 'wertminderung'
+                  ? 'Prüfen Sie in 60 Sekunden, wie viel Ihnen zusteht'
+                  : 'Sehen Sie den Unterschied zwischen Versicherungs- und unabhängigem Gutachter'
+                }
               </p>
             </motion.div>
 
@@ -187,7 +323,7 @@ export default function RechnerPage() {
                         <select
                           value={brand}
                           onChange={(e) => setBrand(e.target.value)}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-snc-yellow focus:ring-0 transition-colors text-lg"
+                          className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:border-snc-yellow focus:ring-0 transition-colors text-lg touch-target"
                         >
                           <option value="">Wählen Sie eine Marke...</option>
                           {CAR_BRANDS.map((b) => (
@@ -200,7 +336,7 @@ export default function RechnerPage() {
                       <div>
                         <label className="block text-sm font-semibold text-snc-dark mb-2">
                           <Calendar className="w-4 h-4 inline mr-2" />
-                          Erstzulassung: <span className="text-snc-yellow">{year}</span>
+                          Erstzulassung: <span className="text-snc-dark font-bold">{year}</span>
                         </label>
                         <input
                           type="range"
@@ -220,7 +356,7 @@ export default function RechnerPage() {
                       <div>
                         <label className="block text-sm font-semibold text-snc-dark mb-2">
                           <Gauge className="w-4 h-4 inline mr-2" />
-                          Kilometerstand: <span className="text-snc-yellow">{km.toLocaleString('de-DE')} km</span>
+                          Kilometerstand: <span className="text-snc-dark font-bold">{km.toLocaleString('de-DE')} km</span>
                         </label>
                         <input
                           type="range"
@@ -271,8 +407,9 @@ export default function RechnerPage() {
                             type="number"
                             value={repairCost}
                             onChange={(e) => setRepairCost(parseInt(e.target.value) || 0)}
-                            className="w-full px-4 py-4 pl-12 border-2 border-gray-200 rounded-xl focus:border-snc-yellow focus:ring-0 transition-colors text-2xl font-bold text-snc-dark"
+                            className="w-full px-4 py-5 pl-12 border-2 border-gray-200 rounded-xl focus:border-snc-yellow focus:ring-0 transition-colors text-2xl font-bold text-snc-dark touch-target"
                             placeholder="5000"
+                            inputMode="numeric"
                           />
                           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-snc-gray">
                             €
@@ -317,7 +454,7 @@ export default function RechnerPage() {
                   </motion.div>
                 )}
 
-                {/* Step 3: Übersicht */}
+                {/* Step 3: Übersicht oder Vergleich */}
                 {step === 3 && (
                   <motion.div
                     key="step3"
@@ -363,7 +500,7 @@ export default function RechnerPage() {
                       <div className="flex items-start gap-3">
                         <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                         <div className="text-sm text-blue-800">
-                          <strong>Hinweis:</strong> Dies ist eine Schätzung. Ein offizielles Gutachten gibt Ihnen 
+                          <strong>Hinweis:</strong> Dies ist eine Schätzung. Ein offizielles Gutachten gibt Ihnen
                           den exakten Wert und ist für Versicherungen verbindlich.
                         </div>
                       </div>
@@ -377,7 +514,7 @@ export default function RechnerPage() {
                 {step > 1 && (
                   <motion.button
                     onClick={() => setStep(step - 1)}
-                    className="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 text-snc-dark rounded-xl font-semibold hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-2 px-6 py-4 border-2 border-gray-300 text-snc-dark rounded-xl font-semibold hover:bg-gray-50 transition-colors touch-target text-lg"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -385,12 +522,12 @@ export default function RechnerPage() {
                     Zurück
                   </motion.button>
                 )}
-                
+
                 {step < 3 ? (
                   <motion.button
                     onClick={() => setStep(step + 1)}
                     disabled={step === 1 && !brand}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-snc-yellow text-snc-dark rounded-xl font-semibold hover:shadow-glow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-snc-yellow text-snc-dark rounded-xl font-semibold hover:shadow-glow disabled:opacity-50 disabled:cursor-not-allowed transition-all touch-target text-lg"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -400,11 +537,11 @@ export default function RechnerPage() {
                 ) : (
                   <motion.button
                     onClick={handleCalculate}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-snc-yellow to-yellow-400 text-snc-dark rounded-xl font-semibold hover:shadow-glow-lg transition-all text-lg"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-5 bg-gradient-to-r from-snc-yellow to-yellow-400 text-snc-dark rounded-xl font-bold hover:shadow-glow-lg transition-all text-xl touch-target"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <Sparkles className="w-5 h-5" />
+                    <Sparkles className="w-6 h-6" />
                     Jetzt berechnen!
                   </motion.button>
                 )}
@@ -412,78 +549,280 @@ export default function RechnerPage() {
             </motion.div>
           </>
         ) : (
-          /* Result */
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center"
-          >
-            <motion.div
-              className="inline-block mb-8"
-              animate={{ rotate: [0, 10, -10, 10, 0] }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="text-6xl">🎉</div>
-            </motion.div>
+          /* Results */
+          <>
+            {activeTab === 'wertminderung' ? (
+              /* Original Wertminderung Result */
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center"
+              >
+                <motion.div
+                  className="inline-block mb-8"
+                  animate={{ rotate: [0, 10, -10, 10, 0] }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="text-6xl">🎉</div>
+                </motion.div>
 
-            <h2 className="text-3xl font-bold text-snc-dark mb-4">Ihre geschätzte Wertminderung:</h2>
+                <h2 className="text-3xl font-bold text-snc-dark mb-4">Ihre geschätzte Wertminderung:</h2>
 
-            <motion.div
-              className="bg-gradient-to-br from-snc-yellow to-yellow-300 rounded-3xl p-12 mb-8 shadow-2xl"
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring' }}
-            >
-              <div className="text-6xl lg:text-8xl font-black text-snc-dark mb-4">
-                <CountUp end={result.min} /> - <CountUp end={result.max} />
-              </div>
-              <div className="text-xl text-snc-dark/80">
-                Das bedeutet: Neben den <strong>{repairCost.toLocaleString('de-DE')}€</strong> Reparaturkosten 
-                stehen Ihnen zusätzlich bis zu <strong>{result.max.toLocaleString('de-DE')}€</strong> Wertminderung zu!
-              </div>
-            </motion.div>
+                <motion.div
+                  className="bg-gradient-to-br from-snc-yellow to-yellow-300 rounded-3xl p-12 mb-8 shadow-2xl"
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: 'spring' }}
+                >
+                  <div className="text-6xl lg:text-8xl font-black text-snc-dark mb-4">
+                    <CountUp end={result.min} /> - <CountUp end={result.max} />
+                  </div>
+                  <div className="text-xl text-snc-dark/80">
+                    Das bedeutet: Neben den <strong>{repairCost.toLocaleString('de-DE')}€</strong> Reparaturkosten
+                    stehen Ihnen zusätzlich bis zu <strong>{result.max.toLocaleString('de-DE')}€</strong> Wertminderung zu!
+                  </div>
+                </motion.div>
 
-            <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-6 mb-8">
-              <div className="flex items-start gap-4">
-                <CheckCircle className="w-8 h-8 text-green-600 flex-shrink-0" />
-                <div className="text-left">
-                  <h3 className="font-bold text-green-900 mb-2">Lassen Sie sich diese {result.max.toLocaleString('de-DE')}€ nicht entgehen!</h3>
-                  <p className="text-green-800">
-                    Ein offizielles Gutachten von uns sichert Ihnen diese Ansprüche. 
-                    Die Versicherung zahlt das Gutachten – für Sie <strong>völlig kostenlos</strong>.
-                  </p>
+                <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-6 mb-8">
+                  <div className="flex items-start gap-4">
+                    <CheckCircle className="w-8 h-8 text-green-600 flex-shrink-0" />
+                    <div className="text-left">
+                      <h3 className="font-bold text-green-900 mb-2">Lassen Sie sich diese {result.max.toLocaleString('de-DE')}€ nicht entgehen!</h3>
+                      <p className="text-green-800">
+                        Ein offizielles Gutachten von uns sichert Ihnen diese Ansprüche.
+                        Die Versicherung zahlt das Gutachten – für Sie <strong>völlig kostenlos</strong>.
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <motion.a
-                href="tel:+4915209423739"
-                className="flex-1 bg-snc-dark text-white px-8 py-4 rounded-xl font-semibold hover:bg-snc-dark-2 transition-all flex items-center justify-center gap-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Phone className="w-5 h-5" />
-                Jetzt anrufen
-              </motion.a>
-              <motion.a
-                href="https://wa.me/4915209423739"
-                className="flex-1 bg-green-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-600 transition-all flex items-center justify-center gap-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <MessageCircle className="w-5 h-5" />
-                WhatsApp
-              </motion.a>
-            </div>
+                <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                  <motion.a
+                    href="tel:+4915209423739"
+                    className="flex-1 bg-snc-dark text-white px-6 sm:px-8 py-5 rounded-xl font-bold hover:bg-snc-dark-2 transition-all flex items-center justify-center gap-3 text-lg touch-target"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Jetzt anrufen"
+                  >
+                    <Phone className="w-6 h-6" />
+                    <span className="hidden xs:inline">Jetzt anrufen</span>
+                    <span className="xs:hidden">Anrufen</span>
+                  </motion.a>
+                  <motion.a
+                    href="https://wa.me/4915209423739"
+                    className="flex-1 bg-green-500 text-white px-6 sm:px-8 py-5 rounded-xl font-bold hover:bg-green-600 transition-all flex items-center justify-center gap-3 text-lg touch-target"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="WhatsApp Kontakt"
+                  >
+                    <MessageCircle className="w-6 h-6" />
+                    WhatsApp
+                  </motion.a>
+                </div>
 
-            <button
-              onClick={resetCalculator}
-              className="text-snc-gray hover:text-snc-dark transition-colors underline"
-            >
-              Neue Berechnung starten
-            </button>
-          </motion.div>
+                <button
+                  onClick={resetCalculator}
+                  className="text-snc-gray hover:text-snc-dark transition-colors underline"
+                >
+                  Neue Berechnung starten
+                </button>
+              </motion.div>
+            ) : (
+              /* COMPARISON RESULT - DRAMATIC! */
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="max-w-3xl mx-auto"
+              >
+                <h2 className="text-3xl font-bold text-snc-dark mb-2 text-center">Was bekommen Sie?</h2>
+                <p className="text-snc-gray text-center mb-8">Der dramatische Unterschied</p>
+
+                <div className="space-y-6">
+                  {/* Insurance Gutachter */}
+                  <motion.div
+                    className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-6"
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-3xl">😐</span>
+                      <h3 className="text-xl font-bold text-gray-700">Versicherungs-Gutachter</h3>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex justify-between text-gray-600">
+                        <span>├─ Reparatur:</span>
+                        <span className="font-semibold"><CountUp end={comparison.insurance.repair} /></span>
+                      </div>
+                      <div className="flex justify-between text-gray-600">
+                        <span>├─ Wertminderung:</span>
+                        <span className="font-semibold"><CountUp end={comparison.insurance.depreciation} /></span>
+                      </div>
+                      <div className="flex justify-between text-gray-600">
+                        <span>└─ Nutzungsausfall:</span>
+                        <span className="font-semibold">0€</span>
+                      </div>
+                      <div className="border-t-2 border-gray-300 pt-3 flex justify-between items-center">
+                        <span className="font-bold text-gray-900">GESAMT:</span>
+                        <span className="text-2xl font-black text-gray-900">
+                          <CountUp end={comparison.insurance.total} />
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Divider */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1 border-t-2 border-dashed border-gray-300"></div>
+                    <span className="text-snc-gray font-semibold">VS</span>
+                    <div className="flex-1 border-t-2 border-dashed border-gray-300"></div>
+                  </div>
+
+                  {/* SNC Gutachter - WITH GLOW! */}
+                  <motion.div
+                    className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-400 rounded-2xl p-6 relative overflow-hidden"
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    {/* Glow Effect */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-br from-snc-yellow/20 to-green-400/20 blur-2xl"
+                      animate={{
+                        opacity: [0.3, 0.6, 0.3],
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 2,
+                        ease: "easeInOut"
+                      }}
+                    />
+
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-3xl">🎉</span>
+                        <h3 className="text-xl font-bold text-green-900">SNC Gutachter</h3>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-green-800">
+                          <span>├─ Reparatur:</span>
+                          <span className="font-semibold"><CountUp end={comparison.snc.repair} /></span>
+                        </div>
+                        <div className="flex justify-between text-green-800">
+                          <span>├─ Wertminderung:</span>
+                          <span className="font-semibold">
+                            <CountUp end={comparison.snc.depreciation} />
+                            <span className="text-green-600 text-sm ml-2">(+{percentIncrease}%)</span>
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-green-800">
+                          <span>├─ Nutzungsausfall:</span>
+                          <span className="font-semibold"><CountUp end={comparison.snc.nutzungsausfall} /></span>
+                        </div>
+                        <div className="border-t-2 border-green-400 pt-3 flex justify-between items-center">
+                          <span className="font-bold text-green-900">GESAMT:</span>
+                          <span className="text-2xl font-black text-green-900">
+                            <CountUp end={comparison.snc.total} />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Loss Warning - BLINKING! */}
+                  <motion.div
+                    className="bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-2xl p-6"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <div className="flex items-center justify-center gap-4">
+                      <motion.div
+                        animate={{
+                          scale: [1, 1.1, 1],
+                          opacity: [1, 0.7, 1]
+                        }}
+                        transition={{
+                          repeat: 3,
+                          duration: 0.5
+                        }}
+                      >
+                        <TrendingDown className="w-10 h-10" />
+                      </motion.div>
+                      <div className="text-center">
+                        <p className="text-sm font-semibold mb-1">⚠️ SIE VERLIEREN</p>
+                        <motion.p
+                          className="text-4xl font-black"
+                          animate={{
+                            scale: [1, 1.05, 1],
+                          }}
+                          transition={{
+                            repeat: 3,
+                            duration: 0.5
+                          }}
+                        >
+                          -{loss.toLocaleString('de-DE')}€
+                        </motion.p>
+                        <p className="text-sm mt-1">mit Versicherungs-Gutachter!</p>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* CTA */}
+                  <motion.div
+                    className="bg-snc-dark text-white rounded-2xl p-6 text-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    <TrendingUp className="w-12 h-12 text-snc-yellow mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold mb-2">
+                      Holen Sie sich die vollen {loss.toLocaleString('de-DE')}€!
+                    </h3>
+                    <p className="text-gray-300 mb-6">
+                      Ein unabhängiges Gutachten von SNC sichert Ihnen {loss.toLocaleString('de-DE')}€ mehr.
+                      <strong> Kostenlos für Sie</strong> - die Versicherung zahlt!
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <motion.a
+                        href="tel:+4915209423739"
+                        className="flex-1 bg-snc-yellow text-snc-dark px-6 sm:px-8 py-5 rounded-xl font-bold hover:shadow-glow-lg transition-all flex items-center justify-center gap-3 text-lg touch-target"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        aria-label="Jetzt anrufen"
+                      >
+                        <Phone className="w-6 h-6" />
+                        <span className="hidden xs:inline">Jetzt anrufen</span>
+                        <span className="xs:hidden">Anrufen</span>
+                      </motion.a>
+                      <motion.a
+                        href="https://wa.me/4915209423739"
+                        className="flex-1 bg-green-500 text-white px-6 sm:px-8 py-5 rounded-xl font-bold hover:bg-green-600 transition-all flex items-center justify-center gap-3 text-lg touch-target"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        aria-label="WhatsApp Kontakt"
+                      >
+                        <MessageCircle className="w-6 h-6" />
+                        WhatsApp
+                      </motion.a>
+                    </div>
+                  </motion.div>
+                </div>
+
+                <button
+                  onClick={resetCalculator}
+                  className="text-snc-gray hover:text-snc-dark transition-colors underline mt-8 block mx-auto"
+                >
+                  Neue Berechnung starten
+                </button>
+              </motion.div>
+            )}
+          </>
         )}
       </div>
 
