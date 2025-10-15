@@ -127,13 +127,6 @@ export function generateLocalBusinessSchema() {
           }
         }
       ]
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      bestRating: '5',
-      worstRating: '1',
-      ratingCount: '300'
     }
   }
 }
