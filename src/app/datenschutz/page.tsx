@@ -24,7 +24,7 @@ export default function DatenschutzPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex items-center gap-4 mb-8">
           <div className="w-16 h-16 bg-snc-yellow/10 rounded-xl flex items-center justify-center">
-            <Shield className="w-8 h-8 text-snc-yellow" />
+            <Shield className="w-8 h-8 text-snc-dark" />
           </div>
           <div>
             <h1 className="text-4xl font-bold text-snc-dark">Datenschutzerklärung</h1>
@@ -136,13 +136,17 @@ export default function DatenschutzPage() {
               
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-snc-yellow flex-shrink-0" />
+                  <div className="w-9 h-9 bg-snc-yellow/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-snc-dark" />
+                  </div>
                   <a href="tel:+4915209423739" className="text-snc-dark hover:text-snc-yellow">
                     +49 1520 9423739
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-snc-yellow flex-shrink-0" />
+                  <div className="w-9 h-9 bg-snc-yellow/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-snc-dark" />
+                  </div>
                   <a href="mailto:kontakt@snc-svb.de" className="text-snc-dark hover:text-snc-yellow">
                     kontakt@snc-svb.de
                   </a>

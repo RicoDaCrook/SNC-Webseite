@@ -33,20 +33,26 @@ export default function ImpressumPage() {
               <p className="text-snc-gray mb-1">Inhaber: Ilker Sancar</p>
               <div className="space-y-3 mt-4">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-snc-yellow flex-shrink-0 mt-0.5" />
+                  <div className="w-9 h-9 bg-snc-yellow/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <MapPin className="w-5 h-5 text-snc-dark" />
+                  </div>
                   <div>
                     <p className="text-snc-dark">Rohrackerstraße 5</p>
                     <p className="text-snc-dark">73029 Stuttgart</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-snc-yellow flex-shrink-0" />
+                  <div className="w-9 h-9 bg-snc-yellow/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-snc-dark" />
+                  </div>
                   <a href="tel:+4915209423739" className="text-snc-dark hover:text-snc-yellow">
                     +49 1520 9423739
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-snc-yellow flex-shrink-0" />
+                  <div className="w-9 h-9 bg-snc-yellow/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-snc-dark" />
+                  </div>
                   <a href="mailto:kontakt@snc-svb.de" className="text-snc-dark hover:text-snc-yellow">
                     kontakt@snc-svb.de
                   </a>

@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         'snc-yellow': '#ffff47',
+        'snc-yellow-dark': '#D4A000',
         'snc-gold': '#F59E0B',
         'snc-dark': '#0e1a1a',
         'snc-dark-2': '#1F2937',
@@ -19,6 +20,10 @@ const config: Config = {
       boxShadow: {
         'glow': '0 0 20px rgba(255, 255, 71, 0.3)',
         'glow-lg': '0 0 40px rgba(255, 255, 71, 0.4)',
+      },
+      dropShadow: {
+        'icon': '0 0 3px rgba(0, 0, 0, 0.3)',
+        'icon-strong': '0 0 2px rgba(0, 0, 0, 0.5)',
       },
     },
   },

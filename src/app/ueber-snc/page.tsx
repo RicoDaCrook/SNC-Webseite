@@ -54,8 +54,10 @@ export default function UeberSNCPage() {
               <Link href="/faq" className="text-snc-gray hover:text-snc-dark transition-colors hidden md:block py-2">
                 FAQ
               </Link>
-              <a href="tel:+4915209423739" className="text-snc-yellow hover:text-snc-dark transition-colors p-2 touch-target" aria-label="Jetzt anrufen">
-                <Phone className="w-6 h-6" />
+              <a href="tel:+4915209423739" className="p-2 touch-target group" aria-label="Jetzt anrufen">
+                <div className="w-10 h-10 bg-snc-yellow/15 rounded-full flex items-center justify-center group-hover:bg-snc-yellow/25 transition-colors">
+                  <Phone className="w-6 h-6 text-snc-dark" />
+                </div>
               </a>
             </div>
           </div>
@@ -404,7 +406,9 @@ export default function UeberSNCPage() {
                 <p className="text-sm text-snc-gray mb-4">In Kooperation mit</p>
                 <h3 className="text-3xl lg:text-4xl font-bold text-snc-dark mb-2 flex items-center justify-center gap-3">
                   Güzel Anwaltskanzlei
-                  <Scale className="w-8 h-8 text-snc-yellow" />
+                  <div className="w-12 h-12 bg-snc-yellow/15 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Scale className="w-7 h-7 text-snc-dark" />
+                  </div>
                 </h3>
               </div>
 

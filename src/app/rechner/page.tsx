@@ -205,10 +205,12 @@ export default function RechnerPage() {
               </Link>
               <a
                 href="tel:+4915209423739"
-                className="text-snc-yellow hover:text-snc-dark transition-colors p-2 touch-target"
+                className="p-2 touch-target group"
                 aria-label="Jetzt anrufen"
               >
-                <Phone className="w-6 h-6" />
+                <div className="w-10 h-10 bg-snc-yellow/15 rounded-full flex items-center justify-center group-hover:bg-snc-yellow/25 transition-colors">
+                  <Phone className="w-6 h-6 text-snc-dark" />
+                </div>
               </a>
             </div>
           </div>
