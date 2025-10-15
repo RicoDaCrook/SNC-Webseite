@@ -70,6 +70,14 @@ export default function ImpressumPage() {
           </section>
 
           <section className="mb-12">
+            <h2 className="text-2xl font-bold text-snc-dark mb-4">Umsatzsteuer-ID</h2>
+            <p className="text-snc-gray">
+              <strong className="text-snc-dark">Steuernummer:</strong> 97205/21882<br />
+              <strong className="text-snc-dark">Finanzamt:</strong> Stuttgart IV
+            </p>
+          </section>
+
+          <section className="mb-12">
             <h2 className="text-2xl font-bold text-snc-dark mb-4">EU-Streitschlichtung</h2>
             <p className="text-snc-gray">
               Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:{' '}
