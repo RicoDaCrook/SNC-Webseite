@@ -65,26 +65,7 @@ export default function ImpressumPage() {
             <h2 className="text-2xl font-bold text-snc-dark mb-4">Berufsbezeichnung</h2>
             <p className="text-snc-gray mb-4">
               <strong className="text-snc-dark">Kfz-Sachverständiger</strong><br />
-              Öffentlich bestellt und vereidigt
-            </p>
-            <p className="text-snc-gray">
-              <strong className="text-snc-dark">Zuständige Kammer:</strong><br />
-              IHK Region Stuttgart<br />
-              Jägerstraße 30<br />
-              70174 Stuttgart
-            </p>
-          </section>
-
-          <section className="mb-12">
-            <h2 className="text-2xl font-bold text-snc-dark mb-4">Berufshaftpflichtversicherung</h2>
-            <p className="text-snc-gray">
-              <strong className="text-snc-dark">Versicherer:</strong><br />
-              [Versicherungsname]<br />
-              [Adresse]<br />
-              [PLZ Ort]
-            </p>
-            <p className="text-snc-gray mt-4">
-              <strong className="text-snc-dark">Geltungsbereich:</strong> Deutschland
+              Unabhängiger Gutachter
             </p>
           </section>
 

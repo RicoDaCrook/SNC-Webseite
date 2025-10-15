@@ -36,12 +36,12 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   title: 'KFZ Gutachter Stuttgart - Unabhängig & Schnell | SNC Gutachter',
-  description: 'Unabhängige KFZ-Gutachten in Stuttgart. Öffentlich bestellt & vereidigt. 24h vor Ort, 48h Gutachten fertig. Über 300 zufriedene Kunden. Jetzt kostenlos anrufen!',
-  keywords: 'KFZ Gutachter Stuttgart, Unfallgutachten Stuttgart, Schadensgutachten, Wertgutachten, öffentlich bestellt vereidigt, Wertminderung, Nutzungsausfall, Gutachter Stuttgart',
+  description: 'Unabhängige KFZ-Gutachten in Stuttgart. Ihr unabhängiger Gutachter. 24h vor Ort, 48h Gutachten fertig. Über 300 zufriedene Kunden. Jetzt kostenlos anrufen!',
+  keywords: 'KFZ Gutachter Stuttgart, Unfallgutachten Stuttgart, Schadensgutachten, Wertgutachten, unabhängiger Gutachter, Wertminderung, Nutzungsausfall, Gutachter Stuttgart',
   authors: [{ name: 'Ilker Sancar - SNC Gutachter' }],
   openGraph: {
     title: 'KFZ Gutachter Stuttgart - Unabhängig & Schnell | SNC Gutachter',
-    description: 'Öffentlich bestellt & vereidigt. 24h vor Ort, 48h Gutachten fertig. Jetzt kostenlos anrufen: 0152 09423739',
+    description: 'Ihr unabhängiger Gutachter. 24h vor Ort, 48h Gutachten fertig. Jetzt kostenlos anrufen: 0152 09423739',
     url: 'https://snc-svb.de',
     siteName: 'SNC Gutachter Stuttgart',
     locale: 'de_DE',
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'KFZ Gutachter Stuttgart - Unabhängig & Schnell',
-    description: 'Öffentlich bestellt & vereidigt. 24h vor Ort, 48h Gutachten fertig.',
+    description: 'Ihr unabhängiger Gutachter. 24h vor Ort, 48h Gutachten fertig.',
   },
   robots: {
     index: true,

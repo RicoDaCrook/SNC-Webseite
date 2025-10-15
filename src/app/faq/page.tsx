@@ -22,7 +22,7 @@ const FAQ_DATA = [
   },
   {
     question: 'Was ist der Unterschied zwischen Wertgutachten und Unfallgutachten?',
-    answer: 'Ein Unfallgutachten wird nach einem Verkehrsunfall erstellt und dokumentiert alle Schäden am Fahrzeug, berechnet die Reparaturkosten, die Wertminderung und stellt fest, ob ein wirtschaftlicher Totalschaden vorliegt. Es dient als Grundlage für die Schadensregulierung mit der Versicherung. Ein Wertgutachten hingegen ermittelt den aktuellen Marktwert Ihres Fahrzeugs zum Bewertungszeitpunkt und wird benötigt beim Fahrzeugkauf/-verkauf, für Finanzierungen, bei Scheidungen oder Erbschaften. Bei SNC Gutachter in Stuttgart erstellen wir beide Gutachtenarten professionell und zuverlässig. Als öffentlich bestellter und vereidigter Sachverständiger garantieren wir höchste Qualität und Akzeptanz bei allen Behörden und Versicherungen.'
+    answer: 'Ein Unfallgutachten wird nach einem Verkehrsunfall erstellt und dokumentiert alle Schäden am Fahrzeug, berechnet die Reparaturkosten, die Wertminderung und stellt fest, ob ein wirtschaftlicher Totalschaden vorliegt. Es dient als Grundlage für die Schadensregulierung mit der Versicherung. Ein Wertgutachten hingegen ermittelt den aktuellen Marktwert Ihres Fahrzeugs zum Bewertungszeitpunkt und wird benötigt beim Fahrzeugkauf/-verkauf, für Finanzierungen, bei Scheidungen oder Erbschaften. Bei SNC Gutachter in Stuttgart erstellen wir beide Gutachtenarten professionell und zuverlässig. Als unabhängiger Sachverständiger garantieren wir höchste Qualität und Akzeptanz bei allen Behörden und Versicherungen.'
   },
   {
     question: 'Wie berechnet sich die Wertminderung nach einem Unfall in Stuttgart?',
@@ -34,7 +34,7 @@ const FAQ_DATA = [
   },
   {
     question: 'Wird das Gutachten von allen Versicherungen akzeptiert?',
-    answer: 'Ja, die Gutachten von SNC Gutachter werden von allen Versicherungen in Deutschland akzeptiert. Als öffentlich bestellter und vereidigter Sachverständiger erfüllen unsere Gutachten alle rechtlichen Anforderungen und sind gerichtsverwertbar. Wir haben eine Akzeptanzrate von 97% bei allen großen Versicherungen wie Allianz, HUK-Coburg, ERGO, Axa und vielen mehr. In den seltenen Fällen, wo Versicherungen Einwände haben, unterstützen wir Sie aktiv in der Kommunikation. Über 300 zufriedene Kunden in Stuttgart und Umgebung vertrauen bereits auf unsere Expertise. Unsere detaillierten, professionell fotografierten Gutachten lassen keine Zweifel offen und beschleunigen die Schadensregulierung erheblich.'
+    answer: 'Ja, die Gutachten von SNC Gutachter werden von allen Versicherungen in Deutschland akzeptiert. Als unabhängiger Sachverständiger erfüllen unsere Gutachten alle rechtlichen Anforderungen und sind gerichtsverwertbar. Wir haben eine Akzeptanzrate von 97% bei allen großen Versicherungen wie Allianz, HUK-Coburg, ERGO, Axa und vielen mehr. In den seltenen Fällen, wo Versicherungen Einwände haben, unterstützen wir Sie aktiv in der Kommunikation. Über 300 zufriedene Kunden in Stuttgart und Umgebung vertrauen bereits auf unsere Expertise. Unsere detaillierten, professionell fotografierten Gutachten lassen keine Zweifel offen und beschleunigen die Schadensregulierung erheblich.'
   },
   {
     question: 'Kann ich als Geschädigter auch ohne Anwalt ein Gutachten in Auftrag geben?',
@@ -55,10 +55,6 @@ const FAQ_DATA = [
   {
     question: 'Muss ich mein Fahrzeug in einer bestimmten Werkstatt reparieren lassen?',
     answer: 'Nein, Sie haben freie Werkstattwahl! Als Geschädigter können Sie selbst entscheiden, wo Ihr Fahrzeug repariert wird - sei es in einer Markenwerkstatt, freien Werkstatt oder bei Ihrem Vertrauensbetrieb in Stuttgart oder Umgebung. Die Versicherung muss die Kosten einer fachgerechten Reparatur tragen, auch wenn eine Markenwerkstatt teurer ist. Sie können sogar auf eine Reparatur verzichten und sich die Kosten auszahlen lassen (fiktive Abrechnung). Bei SNC Gutachter beraten wir Sie, welche Option für Sie am vorteilhaftesten ist. Wir arbeiten mit vielen Werkstätten in Stuttgart zusammen und können Ihnen kompetente Partner empfehlen, die direkt mit der Versicherung abrechnen.'
-  },
-  {
-    question: 'Was bedeutet "öffentlich bestellt und vereidigt" bei einem Gutachter?',
-    answer: 'Ein öffentlich bestellter und vereidigter Sachverständiger (wie Ilker Sancar von SNC Gutachter) hat seine Fachkunde durch eine strenge Prüfung bei der Industrie- und Handelskammer (IHK) nachgewiesen. Diese Bestellung ist die höchste Qualifikation für Sachverständige in Deutschland und garantiert Neutralität, Fachkompetenz und Unabhängigkeit. Öffentlich bestellte Gutachter sind zur Objektivität verpflichtet und ihre Gutachten haben vor Gericht höchste Beweiskraft. Anders als freie Gutachter unterliegen sie strengen Qualitätskontrollen und müssen regelmäßig Fortbildungen nachweisen. Für Sie als Kunde bedeutet das: maximale Sicherheit und Akzeptanz bei allen Versicherungen und Gerichten in Stuttgart und ganz Deutschland.'
   },
   {
     question: 'Kann ich auch bei Bagatellschäden ein Gutachten erstellen lassen?',

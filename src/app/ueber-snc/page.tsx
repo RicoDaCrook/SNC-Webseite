@@ -228,7 +228,7 @@ export default function UeberSNCPage() {
               </h2>
 
               <p className="text-lg text-snc-gray mb-6">
-                Öffentlich bestellt & vereidigt
+                Unabhängiger KFZ-Sachverständiger
               </p>
 
               <div className="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-snc-yellow mb-6">
@@ -545,7 +545,7 @@ export default function UeberSNCPage() {
               <h3 className="font-bold text-lg mb-4">SNC Gutachter</h3>
               <p className="text-gray-400 text-sm">
                 Unabhängige KFZ-Gutachten in Stuttgart.<br />
-                Öffentlich bestellt & vereidigt.
+                Ihr unabhängiger Gutachter.
               </p>
             </div>
 

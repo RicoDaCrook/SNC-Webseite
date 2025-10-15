@@ -4,9 +4,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://snc-svb.de/ueber-snc',
   },
-  title: 'Über SNC - Ilker Sancar | KFZ Gutachter Stuttgart öffentlich bestellt',
-  description: '300+ Gutachten in wenigen Monaten! Ilker Sancar - öffentlich bestellt & vereidigt. Erfahren Sie mehr über SNC Gutachter, unsere Mission und warum Kunden uns empfehlen.',
-  keywords: 'Ilker Sancar, SNC Gutachter, KFZ Sachverständiger Stuttgart, öffentlich bestellt vereidigt, unabhängiger Gutachter, Erfolgsgeschichte, über uns',
+  title: 'Über SNC - Ilker Sancar | Unabhängiger KFZ Gutachter Stuttgart',
+  description: '300+ Gutachten in wenigen Monaten! Ilker Sancar - Ihr unabhängiger Gutachter. Erfahren Sie mehr über SNC Gutachter, unsere Mission und warum Kunden uns empfehlen.',
+  keywords: 'Ilker Sancar, SNC Gutachter, KFZ Sachverständiger Stuttgart, unabhängiger Gutachter, Erfolgsgeschichte, über uns',
   openGraph: {
     title: 'Über SNC - Ilker Sancar | KFZ Gutachter Stuttgart',
     description: '300+ zufriedene Kunden in Rekordzeit. Erfahren Sie, warum jeder 3. Kunde durch Empfehlung zu uns kommt.',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Über SNC - Ilker Sancar | KFZ Gutachter Stuttgart',
-    description: '300+ zufriedene Kunden. Öffentlich bestellt & vereidigt.',
+    description: '300+ zufriedene Kunden. Ihr unabhängiger Gutachter.',
   },
 }
 

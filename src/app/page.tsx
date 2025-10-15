@@ -146,7 +146,7 @@ export default function HomePage() {
               />
               <div>
                 <div className="font-bold text-snc-dark">SNC Gutachter</div>
-                <div className="text-xs text-snc-gray">Öffentlich bestellt & vereidigt</div>
+                <div className="text-xs text-snc-gray">Unabhängiger KFZ-Gutachter</div>
               </div>
             </motion.div>
 
@@ -293,7 +293,7 @@ export default function HomePage() {
                 >
                   <Shield className="w-4 h-4 text-snc-yellow" />
                 </motion.div>
-                <span>Öffentlich bestellt & vereidigt</span>
+                <span>Unabhängiger KFZ-Gutachter</span>
               </motion.div>
 
               {/* Typing Animation Headline */}
@@ -758,8 +758,8 @@ export default function HomePage() {
             {[
               {
                 icon: Shield,
-                title: 'Unabhängig & Vereidigt',
-                description: 'Als öffentlich bestellter Sachverständiger arbeiten wir ausschließlich in Ihrem Interesse - nicht für die Versicherung.',
+                title: 'Unabhängig & Objektiv',
+                description: 'Als unabhängiger Sachverständiger arbeiten wir ausschließlich in Ihrem Interesse - nicht für die Versicherung.',
                 gradient: 'from-blue-500 to-blue-600'
               },
               {

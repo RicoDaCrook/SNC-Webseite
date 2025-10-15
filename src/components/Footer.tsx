@@ -21,7 +21,7 @@ export default function Footer() {
               />
               <div>
                 <div className="font-bold">SNC Gutachter</div>
-                <div className="text-xs text-gray-400">Öffentlich bestellt & vereidigt</div>
+                <div className="text-xs text-gray-400">Unabhängiger KFZ-Gutachter</div>
               </div>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed">

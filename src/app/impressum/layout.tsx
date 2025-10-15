@@ -5,7 +5,7 @@ export const metadata: Metadata = {
     canonical: 'https://snc-svb.de/impressum',
   },
   title: 'Impressum | SNC Gutachter Stuttgart',
-  description: 'Impressum und Kontaktdaten von SNC Gutachter - Ilker Sancar, KFZ-Sachverständiger in Stuttgart. Öffentlich bestellt und vereidigt.',
+  description: 'Impressum und Kontaktdaten von SNC Gutachter - Ilker Sancar, unabhängiger KFZ-Sachverständiger in Stuttgart.',
   keywords: 'Impressum, SNC Gutachter, Kontaktdaten, Ilker Sancar, Stuttgart',
   robots: {
     index: true,

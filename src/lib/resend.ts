@@ -21,7 +21,7 @@ export async function sendStatusEmail(
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: #0e1a1a; color: white; padding: 30px; text-align: center;">
             <h1 style="margin: 0;">SNC Gutachter</h1>
-            <p style="margin: 10px 0 0 0; opacity: 0.8;">Öffentlich bestellt & vereidigt</p>
+            <p style="margin: 10px 0 0 0; opacity: 0.8;">Unabhängiger KFZ-Gutachter</p>
           </div>
           
           <div style="padding: 40px 30px; background: #f9f9f9;">

@@ -89,7 +89,7 @@ export function generateLocalBusinessSchema() {
       '@type': 'Person',
       name: BUSINESS_INFO.founder,
       jobTitle: 'KFZ-Sachverständiger',
-      description: 'Öffentlich bestellt und vereidigt'
+      description: 'Unabhängiger Gutachter'
     },
     aggregateRating: {
       '@type': 'AggregateRating',
@@ -140,7 +140,7 @@ export function generateOrganizationSchema() {
     name: BUSINESS_INFO.name,
     url: BUSINESS_INFO.url,
     logo: BUSINESS_INFO.logo,
-    description: 'Unabhängige KFZ-Gutachten in Stuttgart. Öffentlich bestellt & vereidigt. Über 300 zufriedene Kunden.',
+    description: 'Unabhängige KFZ-Gutachten in Stuttgart. Ihr unabhängiger Gutachter. Über 300 zufriedene Kunden.',
     foundingDate: BUSINESS_INFO.foundingDate,
     founder: {
       '@type': 'Person',
