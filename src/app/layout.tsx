@@ -22,6 +22,19 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://snc-svb.de'),
+  alternates: {
+    canonical: 'https://snc-svb.de',
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.png', type: 'image/png', sizes: '32x32' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180' },
+    ],
+  },
+  manifest: '/manifest.json',
   title: 'KFZ Gutachter Stuttgart - Unabhängig & Schnell | SNC Gutachter',
   description: 'Unabhängige KFZ-Gutachten in Stuttgart. Öffentlich bestellt & vereidigt. 24h vor Ort, 48h Gutachten fertig. Über 300 zufriedene Kunden. Jetzt kostenlos anrufen!',
   keywords: 'KFZ Gutachter Stuttgart, Unfallgutachten Stuttgart, Schadensgutachten, Wertgutachten, öffentlich bestellt vereidigt, Wertminderung, Nutzungsausfall, Gutachter Stuttgart',
@@ -74,6 +87,10 @@ export default function RootLayout({
   return (
     <html lang="de">
       <head>
+        <link rel="preload" href="/images/snclogo.png" as="image" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://ewihxvbjfbvzgdpbqlls.supabase.co" />
         <LocalBusinessSchema />
         <OrganizationSchema />
       </head>

@@ -1,6 +1,9 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
+  alternates: {
+    canonical: 'https://snc-svb.de/ueber-snc',
+  },
   title: 'Über SNC - Ilker Sancar | KFZ Gutachter Stuttgart öffentlich bestellt',
   description: '300+ Gutachten in wenigen Monaten! Ilker Sancar - öffentlich bestellt & vereidigt. Erfahren Sie mehr über SNC Gutachter, unsere Mission und warum Kunden uns empfehlen.',
   keywords: 'Ilker Sancar, SNC Gutachter, KFZ Sachverständiger Stuttgart, öffentlich bestellt vereidigt, unabhängiger Gutachter, Erfolgsgeschichte, über uns',

@@ -12,9 +12,9 @@ export const BUSINESS_INFO = {
   logo: 'https://snc-svb.de/images/snclogo.png',
   image: 'https://snc-svb.de/images/sncportrait.png',
   address: {
-    streetAddress: 'Musterstraße 1',
+    streetAddress: 'Rohrackerstraße 5',
     addressLocality: 'Stuttgart',
-    postalCode: '70173',
+    postalCode: '73029',
     addressRegion: 'Baden-Württemberg',
     addressCountry: 'DE'
   },
@@ -90,6 +90,13 @@ export function generateLocalBusinessSchema() {
       name: BUSINESS_INFO.founder,
       jobTitle: 'KFZ-Sachverständiger',
       description: 'Öffentlich bestellt und vereidigt'
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.9',
+      reviewCount: '300',
+      bestRating: '5',
+      worstRating: '1'
     },
     hasOfferCatalog: {
       '@type': 'OfferCatalog',

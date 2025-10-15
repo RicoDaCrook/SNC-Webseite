@@ -1,6 +1,9 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
+  alternates: {
+    canonical: 'https://snc-svb.de/faq',
+  },
   title: 'FAQ - Häufige Fragen zu KFZ-Gutachten Stuttgart | SNC Gutachter',
   description: 'Alle Antworten auf Ihre Fragen rund um KFZ-Gutachten in Stuttgart: Kosten, Ablauf, Dauer, Wertminderung, Ansprüche. 16 detaillierte FAQs von Experten beantwortet.',
   keywords: 'KFZ Gutachten FAQ, Gutachter Fragen, Unfallgutachten Kosten, Wertminderung Fragen, Gutachten Ablauf, KFZ Sachverständiger Fragen Stuttgart',

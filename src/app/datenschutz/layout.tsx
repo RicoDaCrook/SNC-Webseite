@@ -1,6 +1,9 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
+  alternates: {
+    canonical: 'https://snc-svb.de/datenschutz',
+  },
   title: 'Datenschutzerklärung | SNC Gutachter Stuttgart',
   description: 'Datenschutzerklärung von SNC Gutachter Stuttgart. Informationen zur Verarbeitung Ihrer personenbezogenen Daten gemäß DSGVO.',
   keywords: 'Datenschutz, Datenschutzerklärung, DSGVO, SNC Gutachter, Datenschutz Stuttgart',

@@ -1,0 +1,27 @@
+{
+  "name": "SNC Gutachter Stuttgart",
+  "short_name": "SNC Gutachter",
+  "description": "Unabhängige KFZ-Gutachten in Stuttgart - Öffentlich bestellt & vereidigt",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1a1a",
+  "theme_color": "#ffff47",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/images/snclogo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/snclogo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "automotive"],
+  "lang": "de",
+  "dir": "ltr"
+}
