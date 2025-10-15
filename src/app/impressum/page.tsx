@@ -81,11 +81,11 @@ export default function ImpressumPage() {
             <h2 className="text-2xl font-bold text-snc-dark mb-4">EU-Streitschlichtung</h2>
             <p className="text-snc-gray">
               Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:{' '}
-              <a 
-                href="https://ec.europa.eu/consumers/odr/" 
-                target="_blank" 
+              <a
+                href="https://ec.europa.eu/consumers/odr/"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="text-snc-yellow hover:underline"
+                className="text-gray-700 underline decoration-snc-yellow decoration-2 font-semibold hover:text-snc-dark transition-colors"
               >
                 https://ec.europa.eu/consumers/odr/
               </a>.
@@ -162,7 +162,7 @@ export default function ImpressumPage() {
         {/* Quelle */}
         <div className="mt-12 pt-8 border-t border-gray-200">
           <p className="text-sm text-snc-gray text-center">
-            Quelle: <a href="https://www.e-recht24.de" target="_blank" rel="noopener noreferrer" className="text-snc-yellow hover:underline">eRecht24</a>
+            Quelle: <a href="https://www.e-recht24.de" target="_blank" rel="noopener noreferrer" className="text-gray-700 underline decoration-snc-yellow decoration-2 font-semibold hover:text-snc-dark transition-colors">eRecht24</a>
           </p>
         </div>
       </div>
