@@ -191,8 +191,9 @@ export default function FAQPage() {
                     <motion.div
                       animate={{ rotate: openIndex === index ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
+                      className="w-9 h-9 bg-snc-yellow/15 rounded-full flex items-center justify-center flex-shrink-0"
                     >
-                      <ChevronDown className="w-6 h-6 text-snc-yellow-dark drop-shadow-icon flex-shrink-0" />
+                      <ChevronDown className="w-5 h-5 text-snc-dark" />
                     </motion.div>
                   </button>
 

@@ -63,7 +63,9 @@ function SocialProofCounter() {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <Users className="w-5 h-5 text-snc-yellow" />
+      <div className="w-7 h-7 bg-snc-yellow/15 rounded-full flex items-center justify-center flex-shrink-0">
+        <Users className="w-4 h-4 text-snc-dark" />
+      </div>
       <span className="text-sm">
         <motion.span
           key={count}
@@ -275,7 +277,7 @@ export default function RechnerPage() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-12"
             >
-              <div className="inline-flex items-center gap-2 bg-snc-yellow/10 text-snc-dark px-4 py-2 rounded-full text-sm font-semibold mb-4">
+              <div className="inline-flex items-center gap-2 bg-snc-yellow/15 text-snc-dark px-4 py-2 rounded-full text-sm font-semibold mb-4">
                 <Sparkles className="w-4 h-4" />
                 Kostenloser Rechner
               </div>
@@ -439,7 +441,7 @@ export default function RechnerPage() {
                               onClick={() => setDamage(d.value as any)}
                               className={`p-4 rounded-xl border-2 transition-all ${
                                 damage === d.value
-                                  ? 'border-snc-yellow bg-snc-yellow/10'
+                                  ? 'border-snc-yellow bg-snc-yellow/15'
                                   : 'border-gray-200 hover:border-gray-300'
                               }`}
                               whileHover={{ scale: 1.05 }}

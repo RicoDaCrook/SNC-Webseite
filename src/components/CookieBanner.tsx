@@ -45,7 +45,7 @@ export default function CookieBanner() {
               <div className="flex items-start gap-4">
                 {/* Icon */}
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 bg-snc-yellow/10 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-snc-yellow/15 rounded-full flex items-center justify-center">
                     <Cookie className="w-6 h-6 text-snc-dark" />
                   </div>
                 </div>
@@ -57,7 +57,7 @@ export default function CookieBanner() {
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
                     Wir nutzen Cookies für Statistiken und um Ihre Erfahrung zu verbessern.{' '}
-                    <Link href="/datenschutz" className="text-snc-yellow-dark hover:text-snc-dark hover:underline font-semibold drop-shadow-icon">
+                    <Link href="/datenschutz" className="text-gray-700 underline decoration-snc-yellow decoration-2 font-semibold hover:text-snc-dark transition-colors">
                       Mehr erfahren
                     </Link>
                   </p>
