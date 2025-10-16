@@ -7,16 +7,11 @@ export default function ImpressumPage() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="bg-snc-dark text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3">
-              <Image src="/images/snclogo.png" alt="SNC Logo" width={40} height={40} className="rounded-lg" />
-              <span className="font-bold">SNC Gutachter</span>
-            </Link>
-            <Link href="/" className="text-snc-yellow hover:text-white transition-colors">
-              Zur Startseite →
-            </Link>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <Link href="/" className="flex items-center gap-3">
+            <Image src="/images/snclogo.png" alt="SNC Logo" width={40} height={40} className="rounded-lg" />
+            <span className="font-bold">SNC Gutachter</span>
+          </Link>
         </div>
       </header>
 
@@ -66,14 +61,6 @@ export default function ImpressumPage() {
             <p className="text-snc-gray mb-4">
               <strong className="text-snc-dark">Kfz-Sachverständiger</strong><br />
               Unabhängiger Gutachter
-            </p>
-          </section>
-
-          <section className="mb-12">
-            <h2 className="text-2xl font-bold text-snc-dark mb-4">Umsatzsteuer-ID</h2>
-            <p className="text-snc-gray">
-              <strong className="text-snc-dark">Steuernummer:</strong> 97205/21882<br />
-              <strong className="text-snc-dark">Finanzamt:</strong> Stuttgart IV
             </p>
           </section>
 

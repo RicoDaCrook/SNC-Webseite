@@ -91,7 +91,7 @@ export default function RechnerPage() {
   const [brand, setBrand] = useState('')
   const [year, setYear] = useState(2020)
   const [km, setKm] = useState(50000)
-  const [repairCost, setRepairCost] = useState(5000)
+  const [repairCost, setRepairCost] = useState<number | ''>(5000)
   const [damage, setDamage] = useState<'klein' | 'mittel' | 'groß'>('mittel')
 
   // Results
@@ -114,7 +114,8 @@ export default function RechnerPage() {
     }[damage]
 
     // Base Calculation
-    const baseDepreciation = repairCost * ageFactor * kmFactor * damageFactor
+    const costValue = typeof repairCost === 'number' ? repairCost : 0
+    const baseDepreciation = costValue * ageFactor * kmFactor * damageFactor
 
     // Range
     const min = Math.round(baseDepreciation * 0.8 / 50) * 50
@@ -125,23 +126,24 @@ export default function RechnerPage() {
 
   // Calculate comparison values
   const calculateComparison = () => {
+    const costValue = typeof repairCost === 'number' ? repairCost : 0
     const sncDepreciation = calculateDepreciation()
     const insuranceDepreciation = Math.round(sncDepreciation.max * 0.6) // 60% vom SNC-Wert
 
-    const sncNutzungsausfall = Math.round(repairCost * 0.09) // ~9% der Reparaturkosten
+    const sncNutzungsausfall = Math.round(costValue * 0.09) // ~9% der Reparaturkosten
 
     return {
       insurance: {
-        repair: repairCost,
+        repair: costValue,
         depreciation: insuranceDepreciation,
         nutzungsausfall: 0,
-        total: repairCost + insuranceDepreciation
+        total: costValue + insuranceDepreciation
       },
       snc: {
-        repair: repairCost,
+        repair: costValue,
         depreciation: sncDepreciation.max,
         nutzungsausfall: sncNutzungsausfall,
-        total: repairCost + sncDepreciation.max + sncNutzungsausfall
+        total: costValue + sncDepreciation.max + sncNutzungsausfall
       }
     }
   }
@@ -181,7 +183,7 @@ export default function RechnerPage() {
 
       {/* Header */}
       <header className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
               <Image
@@ -410,7 +412,10 @@ export default function RechnerPage() {
                           <input
                             type="number"
                             value={repairCost}
-                            onChange={(e) => setRepairCost(parseInt(e.target.value) || 0)}
+                            onChange={(e) => {
+                              const value = e.target.value
+                              setRepairCost(value === '' ? '' : parseInt(value) || 0)
+                            }}
                             className="w-full px-4 py-5 pl-12 border-2 border-gray-200 rounded-xl focus:border-snc-yellow focus:ring-0 transition-colors text-2xl font-bold text-snc-dark touch-target"
                             placeholder="5000"
                             inputMode="numeric"
@@ -492,7 +497,7 @@ export default function RechnerPage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-snc-gray">Reparaturkosten:</span>
-                        <span className="font-semibold text-snc-dark">{repairCost.toLocaleString('de-DE')}€</span>
+                        <span className="font-semibold text-snc-dark">{typeof repairCost === 'number' ? repairCost.toLocaleString('de-DE') : '0'}€</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-snc-gray">Schadensumfang:</span>
@@ -582,7 +587,7 @@ export default function RechnerPage() {
                     <CountUp end={result.min} /> - <CountUp end={result.max} />
                   </div>
                   <div className="text-xl text-snc-dark/80">
-                    Das bedeutet: Neben den <strong>{repairCost.toLocaleString('de-DE')}€</strong> Reparaturkosten
+                    Das bedeutet: Neben den <strong>{typeof repairCost === 'number' ? repairCost.toLocaleString('de-DE') : '0'}€</strong> Reparaturkosten
                     stehen Ihnen zusätzlich bis zu <strong>{result.max.toLocaleString('de-DE')}€</strong> Wertminderung zu!
                   </div>
                 </motion.div>

@@ -619,7 +619,7 @@ export default function HomePage() {
           >
             <div className="text-center">
               <div className="text-5xl font-bold text-snc-dark mb-2">
-                <CountUp end={2300} />+
+                <CountUp end={300} />+
               </div>
               <div className="text-snc-gray">Gutachten erstellt</div>
             </div>
