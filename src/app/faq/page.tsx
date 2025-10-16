@@ -94,7 +94,7 @@ export default function FAQPage() {
       <div className="min-h-screen bg-gradient-to-br from-snc-light-gray to-white">
         {/* Header */}
         <header className="bg-white border-b sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <Link href="/" className="flex items-center gap-3">
                 <Image

@@ -7,7 +7,7 @@ export default function DatenschutzPage() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="bg-snc-dark text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link href="/" className="flex items-center gap-3">
             <Image src="/images/snclogo.png" alt="SNC Logo" width={40} height={40} className="rounded-lg" />
             <span className="font-bold">SNC Gutachter</span>
